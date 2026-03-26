@@ -14,6 +14,12 @@ export const validationSchema = Joi.object({
   ENCRYPTION_KEY: Joi.string().length(64).required(),
   REDIS_HOST: Joi.string().default('localhost'),
   REDIS_PORT: Joi.number().default(6379),
+  ETH_RPC_URL: Joi.string().uri().required(),
+  POLYGON_RPC_URL: Joi.string().uri().required(),
+  DEPOSIT_CONFIRMATIONS: Joi.number().default(12),
+  USDC_ETH_CONTRACT: Joi.string().required(),
+  USDT_ETH_CONTRACT: Joi.string().required(),
+  USDC_POLYGON_CONTRACT: Joi.string().required(),
 });
 
 export default () => ({
@@ -33,5 +39,15 @@ export default () => ({
   redis: {
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT, 10),
+  },
+  blockchain: {
+    ethRpcUrl: process.env.ETH_RPC_URL,
+    polygonRpcUrl: process.env.POLYGON_RPC_URL,
+    confirmations: parseInt(process.env.DEPOSIT_CONFIRMATIONS, 10) || 12,
+    contracts: {
+      usdcEth: process.env.USDC_ETH_CONTRACT,
+      usdcEth: process.env.USDT_ETH_CONTRACT,
+      usdcPolygon: process.env.USDC_POLYGON_CONTRACT,
+    },
   },
 });
