@@ -56,6 +56,16 @@ export class WalletsService {
     return this.walletRepo.find({ where: { userId, isActive: true } });
   }
 
+  async findByAddress(address: string): Promise<Wallet | null> {
+    return this.walletRepo.findOne({
+      where: { address: address.toLowerCase() },
+    });
+  }
+
+  async getWalletsByNetwork(network: Network): Promise<Wallet[]> {
+    return this.walletRepo.find({ where: { network, isActive: true } });
+  }
+
   // INTERNAL ONLY — never expose this via controller
   async getPrivateKey(walletId: string): Promise<string> {
     const wallet = await this.walletRepo
@@ -89,6 +99,11 @@ export class WalletsService {
     const encrypted = Buffer.from(encryptedHex, 'hex');
     const decipher = crypto.createDecipheriv(this.algorithm, key, iv);
     decipher.setAuthTag(authTag);
-    return decipher.update(encrypted) + decipher.final('utf8');
+    // Buffer.concat instead of string + to avoid type mismatch
+    return Buffer.concat([
+      decipher.update(encrypted),
+      decipher.final(),
+    ]).toString('utf8');
   }
+  exports: [WalletsService];
 }

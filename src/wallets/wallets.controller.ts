@@ -2,6 +2,7 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('wallets')
 export class WalletsController {
@@ -9,7 +10,7 @@ export class WalletsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getMyWallets(@CurrentUser() user: any) {
+  getMyWallets(@CurrentUser() user: User) {
     return this.walletsService.getWalletsByUser(user.id);
   }
 }
